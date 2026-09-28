@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Étiquettes Nike</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAABaElEQVR4nO2bMU7DMBSGHasDUjshRkTP0K0j3IShR+AOjFygt0DcoUx070LZkLhDmRJFrhO7VcNH/P5vjF+t/316iao2rlwG8+XqkFP339hv1lWqprNgrE3H6BMRXSip+TYxET68UGrzzsV786mC0gh79F0LJdPu1YcXrFD3fPQMsMYkVfDz9fEXOQbj5m7Ruz7JGf/UJiGz69uT6ofic/vauz5frg7mbwEJoAPQSAAdgEYC6AA0EkAHoJEAOgCNBNABaCSADkAjAXQAGgmgA9BIAB2AxryA5P8C5/D0PD37s49Xu4vlmD2ka8xPgATQAWgkgA5AIwF0ABoJoAPQSAAdgEYC6AA0EkAHoMn6PeD97WXoHA3fF93tPllhfgIkgA5AIwF0ABrzAirn+g9MlPy6/H6zrpLfA059VX5seOfyDhiWRt2z+WdAI8DSFLR79V0LpRL2eHQLlCwh1psOT+dsMFYZOdP8CxWMSyhfZ5iyAAAAAElFTkSuQmCC">
+<style>
+/* ---- Réglage : clients qui partent sur palette EURO (sinon "jetable") ---- */
+:root{
+  --navy:#1F3864; --navy-2:#2B4A80;
+  --bg:#F3F5F9; --panel:#FFFFFF; --ink:#16233A; --muted:#5B6781; --line:#D5DBE6;
+  --accent:#1F3864; --accent-ink:#FFFFFF; --ok:#2F6B3A; --warn:#8A5A00;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#0F1522;--panel:#182133;--ink:#E6EBF4;--muted:#9AA6BD;--line:#2C3850;--accent:#4C74C0;--accent-ink:#FFFFFF;--ok:#7CC48A;--warn:#E3B55A;color-scheme:dark}
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;padding-inline:16px}
+.wrap{max-width:1280px;margin:0 auto;padding-block:20px 60px;display:flex;flex-direction:column;gap:16px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{margin:0;font-size:22px;letter-spacing:.2px}
+h1 small{font-weight:400;color:var(--muted);font-size:14px;margin-left:8px}
+
+.drop{border:2px dashed var(--line);background:var(--panel);border-radius:10px;padding:28px 20px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+.drop:hover,.drop.over{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--panel))}
+.drop strong{display:block;font-size:17px;margin-bottom:4px}
+.drop span{color:var(--muted)}
+.drop.compact{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;flex-wrap:wrap}
+.drop.compact strong{font-size:14px;margin:0}
+
+.bar{display:none;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;gap:14px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:5}
+.bar.on{display:flex}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.stat b{font-size:20px;display:block;line-height:1.1}
+.stat span{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:5px 11px;font:inherit;font-size:13px;cursor:pointer}
+.chip.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.spacer{flex:1}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:8px 12px;font:inherit;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.print{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600;font-size:16px;padding:10px 22px}
+.print:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,.drop:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:2px}
+.msg{padding:10px 14px;border-radius:8px;background:color-mix(in srgb,#C0392B 12%,var(--panel));border:1px solid color-mix(in srgb,#C0392B 40%,var(--line));display:none}
+.msg.on{display:block}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.card{position:relative;cursor:pointer;border-radius:4px;transition:opacity .15s}
+.card .n{position:absolute;top:-8px;left:-8px;z-index:2;background:var(--panel);border:1px solid var(--line);border-radius:999px;font-size:11px;padding:1px 7px;color:var(--muted);font-variant-numeric:tabular-nums}
+.card.off{opacity:.28}
+.card.off::after{content:"Exclue";position:absolute;inset:0;display:grid;place-items:center;font-weight:700;color:var(--ink);font-size:18px}
+.hint{color:var(--muted);font-size:13px}
+
+/* ---------- ÉTIQUETTE (reprise fidèle de la feuille Excel) ---------- */
+.label{
+  container-type:inline-size;width:100%;aspect-ratio:542/258;background:#fff;
+  display:grid;border:2px solid #000;
+  grid-template-columns:22.33fr 18.55fr 14.66fr 13fr 13fr 13fr 3.66fr;
+  grid-template-rows:80fr 30fr 30fr 30fr 30fr 30fr 28.2fr;
+  font-family:"Aptos Narrow","Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif;font-weight:700;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact;overflow:hidden;
+}
+.label>div{display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.02;min-width:0;overflow:hidden}
+.l-rdv{grid-column:1;grid-row:1/7;background:#1F3864;color:#fff;font-size:8.8cqw;flex-direction:column;border-right:2px solid #000}
+.l-pack{grid-column:2/7;grid-row:1/4;background:#1F3864;color:#fff;font-size:9.6cqw;letter-spacing:.02em}
+.l-strip{grid-column:7;grid-row:1/7;background:#1F3864;border-left:2px solid #000}
+.l-ctn{grid-column:2/4;grid-row:4/7;background:#E2EFDA;color:#375623;font-size:5.9cqw;border-top:2px solid #000}
+.l-type{grid-column:4/7;grid-row:4/7;background:#FFF2CC;color:#7F6000;font-size:4.8cqw;border-top:2px solid #000;border-left:2px solid #000}
+.l-cust{grid-column:1/8;grid-row:7;background:#E8EDF3;color:#1F3864;font-size:3.7cqw;border-top:2px solid #000;padding:0 1cqw;white-space:nowrap;text-overflow:ellipsis}
+
+#printArea{display:none}
+@media print{
+  @page{size:A4 landscape;margin:0}
+  html,body{background:#fff!important;padding:0!important;margin:0}
+  .wrap{display:none!important}
+  #printArea{display:block}
+  .sheet{width:297mm;height:209mm;padding:19mm 6.35mm 0;page-break-after:always;break-after:page;overflow:hidden}
+  .sheet:last-child{page-break-after:auto;break-after:auto}
+  .sheet .label{width:284.3mm}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Étiquettes Nike <small>glisse l'export du jour, vérifie, imprime</small></h1>
+  </header>
+
+  <div id="drop" class="drop" tabindex="0" role="button" aria-label="Choisir le fichier Excel">
+    <strong>Glisse ici la pièce jointe Excel, directement depuis ta boîte mail</strong>
+    <span>ou clique pour choisir un fichier · ou ouvre l'Excel, Ctrl+A, Ctrl+C, puis Ctrl+V ici</span>
+  </div>
+  <input id="file" type="file" accept=".xlsx,.xlsm,.csv,.txt" hidden>
+
+  <div id="msg" class="msg"></div>
+
+  <div id="bar" class="bar">
+    <div class="stats">
+      <div class="stat"><b id="sLabels">0</b><span>Étiquettes</span></div>
+      <div class="stat"><b id="sCtn">0</b><span>Cartons</span></div>
+      <div class="stat"><b id="sEuro">0</b><span>Euro</span></div>
+      <div class="stat"><b id="sJet">0</b><span>Jetable</span></div>
+    </div>
+    <div class="chips" id="chips" aria-label="Filtrer par date BI"></div>
+    <div class="spacer"></div>
+    <button class="btn" id="bAll" type="button">Tout cocher</button>
+    <button class="btn" id="bNone" type="button">Tout décocher</button>
+    <button class="btn print" id="bPrint" type="button">🖨 Imprimer</button>
+  </div>
+
+  <div class="hint" id="hint" hidden>Clique sur une étiquette pour l'exclure / la remettre. Imprimante : A4 paysage, marges « Aucune » ou « Par défaut », cocher « Graphiques d'arrière-plan ».</div>
+  <div class="grid" id="grid"></div>
+</div>
+<div id="printArea"></div>
+
+<script>
+/* ===== Règle palette : ces clients = "euro", tous les autres = "jetable" ===== */
+const CLIENTS_EURO = ["LOGISTIQUE SPORT ET LOISIR","VENTE PRIVEE","VENTE-PRIVEE.COM"];
+
+/* ---------- Lecteur XLSX minimal (zip + XML), sans librairie ---------- */
+async function unzip(buf){
+  const dv=new DataView(buf), u8=new Uint8Array(buf), out={};
+  let eocd=-1;
+  for(let i=u8.length-22;i>=Math.max(0,u8.length-66000);i--){ if(dv.getUint32(i,true)===0x06054b50){eocd=i;break;} }
+  if(eocd<0) throw new Error("Ce fichier n'est pas un Excel .xlsx valide.");
+  const count=dv.getUint16(eocd+10,true); let p=dv.getUint32(eocd+16,true);
+  const td=new TextDecoder();
+  for(let k=0;k<count;k++){
+    if(dv.getUint32(p,true)!==0x02014b50) break;
+    const method=dv.getUint16(p+10,true), csize=dv.getUint32(p+20,true);
+    const nl=dv.getUint16(p+28,true), el=dv.getUint16(p+30,true), cl=dv.getUint16(p+32,true);
+    const lo=dv.getUint32(p+42,true); const name=td.decode(u8.subarray(p+46,p+46+nl));
+    const lnl=dv.getUint16(lo+26,true), lel=dv.getUint16(lo+28,true);
+    const data=u8.subarray(lo+30+lnl+lel, lo+30+lnl+lel+csize);
+    out[name]={method,data};
+    p+=46+nl+el+cl;
+  }
+  return {
+    has:n=>!!out[n],
+    async text(n){
+      const e=out[n]; if(!e) return null;
+      if(e.method===0) return td.decode(e.data);
+      const ds=new Blob([e.data]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+      return await new Response(ds).text();
+    }
+  };
+}
+const X=(s)=>new DOMParser().parseFromString(s,"application/xml");
+const tags=(n,t)=>Array.from(n.getElementsByTagNameNS("*",t));
+function colIdx(ref){let c=0;for(const ch of ref){const k=ch.charCodeAt(0);if(k<65||k>90)break;c=c*26+(k-64);}return c-1;}
+
+async function readXlsx(buf){
+  const z=await unzip(buf);
+  let shared=[];
+  const ss=await z.text("xl/sharedStrings.xml");
+  if(ss) shared=tags(X(ss),"si").map(si=>tags(si,"t").filter(t=>t.parentNode.localName!=="rPh").map(t=>t.textContent).join(""));
+  const wb=X(await z.text("xl/workbook.xml"));
+  const rels=X(await z.text("xl/_rels/workbook.xml.rels"));
+  const relMap={}; tags(rels,"Relationship").forEach(r=>relMap[r.getAttribute("Id")]=r.getAttribute("Target"));
+  const sheets=[];
+  for(const s of tags(wb,"sheet")){
+    const rid=s.getAttribute("r:id")||s.getAttributeNS("http://schemas.openxmlformats.org/officeDocument/2006/relationships","id");
+    let tgt=relMap[rid]; if(!tgt) continue;
+    tgt=tgt.startsWith("/")?tgt.slice(1):"xl/"+tgt.replace(/^\.\//,"");
+    const xml=await z.text(tgt); if(!xml) continue;
+    const rows=[];
+    for(const r of tags(X(xml),"row")){
+      const row=[];
+      for(const c of tags(r,"c")){
+        const i=colIdx(c.getAttribute("r")||""), t=c.getAttribute("t");
+        const v=tags(c,"v")[0]; let val=v?v.textContent:"";
+        if(t==="s") val=shared[+val]??"";
+        else if(t==="inlineStr") val=tags(c,"t").map(x=>x.textContent).join("");
+        else if(t==="str"||t==="e"||t==="b") {}
+        else if(val!=="") val=Number(val);
+        if(i>=0) row[i]=val;
+      }
+      rows.push(row);
+    }
+    sheets.push({name:s.getAttribute("name"),rows});
+  }
+  return sheets;
+}
+function readCsv(text){
+  const first=text.split("\n")[0], cnt=c=>(first.split(c).length-1);
+  const sep=cnt("\t")>0?"\t":cnt(";")>cnt(",")?";":",";
+  return [{name:"csv",rows:text.split(/\r?\n/).filter(l=>l.trim()).map(l=>l.split(sep).map(x=>x.trim().replace(/^"|"$/g,"")))}];
+}
+
+/* ---------- Extraction des lignes ---------- */
+const norm=s=>String(s??"").trim().toLowerCase();
+function findTable(sheets){
+  for(const sh of sheets){
+    for(let h=0;h<Math.min(15,sh.rows.length);h++){
+      const hdr=(sh.rows[h]||[]).map(norm);
+      const iA=hdr.findIndex(x=>x.startsWith("appointment"));
+      if(iA<0) continue;
+      const f=(...keys)=>hdr.findIndex(x=>keys.some(k=>x===k||x.startsWith(k)));
+      return {rows:sh.rows.slice(h+1),iA,iC:f("customer","client"),iP:f("packlist","pack list","packing list"),iN:f("act cartons","cartons","act carton"),iD:f("bi")};
+    }
+  }
+  // repli : 1re feuille, colonnes A-E comme l'export habituel
+  return {rows:sheets[0].rows,iA:0,iC:1,iP:2,iN:3,iD:4};
+}
+function excelDate(v){
+  if(typeof v==="number"&&v>20000){const d=new Date(Math.round((v-25569)*86400000));return d.toISOString().slice(0,10);}
+  const s=String(v??"").trim(); if(!s) return "";
+  const m=s.match(/(\d{4})-(\d{2})-(\d{2})/)||s.match(/(\d{1,2})[\/.](\d{1,2})[\/.](\d{4})/);
+  if(!m) return s.slice(0,10);
+  return m[1].length===4?`${m[1]}-${m[2]}-${m[3]}`:`${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;
+}
+function packStr(v){ if(typeof v==="number") return String(Math.round(v)); return String(v??"").trim(); }
+const EURO=new Set(CLIENTS_EURO.map(s=>s.trim().toUpperCase()));
+
+function build(t){
+  const out=[];
+  for(const r of t.rows){
+    if(!r) continue;
+    const rdv=String(r[t.iA]??"").trim(); if(!rdv) continue;
+    const cust=String(r[t.iC]??"").trim();
+    const pack=packStr(r[t.iP]);
+    out.push({
+      rdvL:rdv.slice(0,1), rdvR:rdv.slice(-3),
+      pack4:pack.slice(-4), ctn:r[t.iN]??"",
+      type:EURO.has(cust.toUpperCase())?"euro":"jetable",
+      cust, date:t.iD>=0?excelDate(r[t.iD]):"", on:true, rdv, pack
+    });
+  }
+  /* Tri : camions dans l'ordre où ils apparaissent dans l'export, puis packlist croissante */
+  const truckOrder=new Map();
+  out.forEach(l=>{ if(!truckOrder.has(l.rdv)) truckOrder.set(l.rdv,truckOrder.size); });
+  const cmp=new Intl.Collator("fr",{numeric:true}).compare;
+  return out.map((l,i)=>({l,i})).sort((a,b)=>
+    truckOrder.get(a.l.rdv)-truckOrder.get(b.l.rdv) || cmp(a.l.pack,b.l.pack) || a.i-b.i
+  ).map(x=>x.l);
+}
+
+/* ---------- UI ---------- */
+let labels=[], dateFilter="all", fileName="";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const labelHTML=l=>`<div class="label">
+  <div class="l-rdv"><span>${esc(l.rdvL)}</span><span>${esc(l.rdvR)}</span></div>
+  <div class="l-pack">${esc(l.pack4)}</div>
+  <div class="l-strip"></div>
+  <div class="l-ctn">${esc(l.ctn)}</div>
+  <div class="l-type">${esc(l.type)}</div>
+  <div class="l-cust">${esc(l.cust)}</div></div>`;
+const visible=()=>labels.map((l,i)=>({l,i})).filter(x=>dateFilter==="all"||x.l.date===dateFilter);
+const selected=()=>visible().filter(x=>x.l.on).map(x=>x.l);
+
+function fmtDate(d){ if(!/^\d{4}-\d{2}-\d{2}$/.test(d)) return d||"—"; const [y,m,j]=d.split("-"); const js=new Date(+y,+m-1,+j); return js.toLocaleDateString("fr-BE",{weekday:"short",day:"2-digit",month:"2-digit"}); }
+
+function render(){
+  const dates=[...new Set(labels.map(l=>l.date))].filter(Boolean).sort();
+  $("chips").innerHTML = dates.length>1
+    ? [`<button type="button" class="chip ${dateFilter==="all"?"on":""}" data-d="all">Toutes (${labels.length})</button>`]
+      .concat(dates.map(d=>`<button type="button" class="chip ${dateFilter===d?"on":""}" data-d="${esc(d)}">BI ${fmtDate(d)} (${labels.filter(l=>l.date===d).length})</button>`)).join("")
+    : "";
+  const vis=visible();
+  $("grid").innerHTML=vis.map(({l,i},k)=>`<div class="card ${l.on?"":"off"}" data-i="${i}" title="${esc(l.cust)} — cliquer pour exclure/inclure"><span class="n">${k+1}</span>${labelHTML(l)}</div>`).join("");
+  const sel=selected();
+  $("sLabels").textContent=sel.length+(sel.length!==vis.length?" / "+vis.length:"");
+  $("sCtn").textContent=sel.reduce((a,l)=>a+(+l.ctn||0),0);
+  $("sEuro").textContent=sel.filter(l=>l.type==="euro").length;
+  $("sJet").textContent=sel.filter(l=>l.type==="jetable").length;
+  $("bPrint").disabled=!sel.length;
+  $("bPrint").textContent=`🖨 Imprimer ${sel.length} étiquette${sel.length>1?"s":""}`;
+  $("printArea").innerHTML=sel.map(l=>`<div class="sheet">${labelHTML(l)}</div>`).join("");
+}
+
+function showMsg(t){ $("msg").textContent=t; $("msg").classList.add("on"); }
+async function load(file){
+  try{
+    const buf=await file.arrayBuffer(), head=new Uint8Array(buf.slice(0,4));
+    const isZip=head[0]===0x50&&head[1]===0x4B;
+    if(!isZip && head[0]===0xD0 && head[1]===0xCF) throw new Error("ancien format .xls : ouvre-le dans Excel et copie-colle les lignes (Ctrl+A, Ctrl+C puis Ctrl+V ici).");
+    await show(isZip?await readXlsx(buf):readCsv(new TextDecoder().decode(buf)), file.name||"Pièce jointe");
+  }catch(e){ showMsg("Impossible de lire « "+(file.name||"le fichier")+" » : "+e.message); }
+}
+async function loadText(text){
+  try{ await show(readCsv(text),"Données collées"); }
+  catch(e){ showMsg("Impossible de lire les données collées : "+e.message); }
+}
+async function show(sheets,name){
+  $("msg").classList.remove("on");
+  fileName=name;
+  const res=build(findTable(sheets));
+  if(!res.length) throw new Error("aucune ligne trouvée. Il faut les colonnes Appointment Nbr, Customer, packlist, act cartons.");
+  labels=res; dateFilter="all";
+  $("drop").classList.add("compact");
+  $("drop").innerHTML=`<div><strong>${esc(fileName)}</strong> <span>· ${labels.length} lignes lues</span></div><span>Glisse une autre pièce jointe, clique, ou Ctrl+V</span>`;
+  $("bar").classList.add("on"); $("hint").hidden=false;
+  render();
+}
+
+const drop=$("drop"), inp=$("file");
+drop.onclick=()=>inp.click();
+drop.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();inp.click();}};
+inp.onchange=()=>{if(inp.files[0]) load(inp.files[0]); inp.value="";};
+["dragenter","dragover"].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over");}));
+["dragleave","drop"].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();if(ev==="drop"||!e.relatedTarget)drop.classList.remove("over");}));
+document.addEventListener("drop",e=>{
+  const dt=e.dataTransfer, f=dt.files&&dt.files[0];
+  if(f) return load(f);
+  const txt=dt.getData("text/plain")||"";
+  if(txt.includes("\t")) return loadText(txt);
+  showMsg("Ta messagerie n'a pas transmis le fichier (c'est le cas d'Outlook dans le navigateur et de Gmail). Solution sans enregistrer : ouvre la pièce jointe dans Excel, Ctrl+A puis Ctrl+C, reviens ici et fais Ctrl+V.");
+});
+/* Coller : lignes copiées depuis Excel, ou pièce jointe copiée */
+document.addEventListener("paste",e=>{
+  const cd=e.clipboardData; if(!cd) return;
+  const f=cd.files&&cd.files[0];
+  if(f){ e.preventDefault(); return load(f); }
+  const txt=cd.getData("text/plain")||"";
+  if(txt.includes("\t")){ e.preventDefault(); loadText(txt); }
+});
+$("grid").onclick=e=>{const c=e.target.closest(".card"); if(!c) return; const l=labels[+c.dataset.i]; l.on=!l.on; render();};
+$("chips").onclick=e=>{const b=e.target.closest(".chip"); if(!b) return; dateFilter=b.dataset.d; render();};
+$("bAll").onclick=()=>{visible().forEach(x=>x.l.on=true);render();};
+$("bNone").onclick=()=>{visible().forEach(x=>x.l.on=false);render();};
+$("bPrint").onclick=()=>window.print();
+
+</script>
+</body>
+</html>
