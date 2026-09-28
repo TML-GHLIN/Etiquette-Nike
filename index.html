@@ -274,11 +274,23 @@ function render(){
 }
 
 function showMsg(t){ $("msg").textContent=t; $("msg").classList.add("on"); }
+/* Fichier tableur accepté ? (exclut images, PDF, etc.) */
+function isSheetFile(f){
+  if(/^image\//.test(f.type)) return false;
+  return /\.(xlsx|xlsm|csv|txt|tsv)$/i.test(f.name||"") || /spreadsheet|csv|excel|tab-separated/i.test(f.type||"");
+}
+/* Détecte un contenu binaire (image, PDF…) qu'on ne doit pas lire comme du texte */
+function looksBinary(u8){
+  const n=Math.min(u8.length,4096); let bad=0;
+  for(let i=0;i<n;i++){ const c=u8[i]; if(c===0||(c<9)||(c>13&&c<32&&c!==27)) bad++; }
+  return n>0 && bad/n>0.01;
+}
 async function load(file){
   try{
-    const buf=await file.arrayBuffer(), head=new Uint8Array(buf.slice(0,4));
+    const buf=await file.arrayBuffer(), u8=new Uint8Array(buf), head=u8.subarray(0,4);
     const isZip=head[0]===0x50&&head[1]===0x4B;
-    if(!isZip && head[0]===0xD0 && head[1]===0xCF) throw new Error("ancien format .xls : ouvre-le dans Excel et copie-colle les lignes (Ctrl+A, Ctrl+C puis Ctrl+V ici).");
+    if(!isZip && head[0]===0xD0 && head[1]===0xCF) throw new Error("ancien format .xls, ou fichier protégé : ouvre-le dans Excel et copie-colle les lignes (Ctrl+A, Ctrl+C puis Ctrl+V ici).");
+    if(!isZip && (/^image\//.test(file.type) || looksBinary(u8))) throw new Error("ce n'est pas un fichier Excel"+(file.type?" ("+file.type+")":"")+". Glisse la pièce jointe .xlsx, ou copie les lignes dans Excel puis Ctrl+V.");
     await show(isZip?await readXlsx(buf):readCsv(new TextDecoder().decode(buf)), file.name||"Pièce jointe");
   }catch(e){ showMsg("Impossible de lire « "+(file.name||"le fichier")+" » : "+e.message); }
 }
@@ -314,10 +326,11 @@ document.addEventListener("drop",e=>{
 /* Coller : lignes copiées depuis Excel, ou pièce jointe copiée */
 document.addEventListener("paste",e=>{
   const cd=e.clipboardData; if(!cd) return;
-  const f=cd.files&&cd.files[0];
-  if(f){ e.preventDefault(); return load(f); }
+  /* Priorité au texte : Excel copie aussi une IMAGE des cellules, qu'il faut ignorer */
   const txt=cd.getData("text/plain")||"";
-  if(txt.includes("\t")){ e.preventDefault(); loadText(txt); }
+  if(txt.includes("\t")){ e.preventDefault(); return loadText(txt); }
+  const f=[...(cd.files||[])].find(isSheetFile);
+  if(f){ e.preventDefault(); load(f); }
 });
 $("grid").onclick=e=>{const c=e.target.closest(".card"); if(!c) return; const l=labels[+c.dataset.i]; l.on=!l.on; render();};
 $("chips").onclick=e=>{const b=e.target.closest(".chip"); if(!b) return; dateFilter=b.dataset.d; render();};
